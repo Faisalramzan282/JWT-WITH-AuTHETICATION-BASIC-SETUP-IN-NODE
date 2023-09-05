@@ -9,29 +9,27 @@ const getById = async (req, res, next) => {
   }
 };
 
-const getAll = async (req, res, next) => {
+const getAll = async (req, res) => {
   try {
-    const movies = await movieModel.find({});
-    const moviesList = movies.map(movie => ({
-      id: movie._id,
-      name: movie.name,
-      released_on: movie.released_on
-    }));
-    res.json({ status: "success", message: "Movies list found!!!", data: { movies: moviesList } });
+    const allMovies = await movieModel.find(); // Assuming find() fetches all movies
+    res.json(allMovies); // Send the movies data as JSON response
   } catch (error) {
-    next(error);
+    console.error("errro in get Movies==>", error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
 const updateById = async (req, res, next) => {
   try {
-    await movieModel.findByIdAndUpdate(req.params.movieId, { name: req.body.name });
-    res.json({ status: "success", message: "Movie updated successfully!!!", data: null });
+    await movieModel.findByIdAndUpdate(req.params.movieId, {
+      movieName: req.body.movieName,
+      releaseDate: req.body.releaseDate
+    });
+   res.json({ status: "success", message: "Movie updated successfully!!!", data: null });
   } catch (error) {
     next(error);
   }
 };
-
 const deleteById = async (req, res, next) => {
   try {
     await movieModel.findByIdAndRemove(req.params.movieId);
@@ -40,16 +38,14 @@ const deleteById = async (req, res, next) => {
     next(error);
   }
 };
-
 const create = async (req, res, next) => {
   try {
-    await movieModel.create({ name: req.body.name, released_on: req.body.released_on });
+    const response = await movieModel.create({movieName: req.body.movieName, releaseDate: req.body.releaseDate, tickets:req.body.tickets, moviePrice: req.body.moviePrice });
     res.json({ status: "success", message: "Movie added successfully!!!", data: null });
   } catch (error) {
     next(error);
   }
 };
-
 module.exports = {
   getById,
   getAll,

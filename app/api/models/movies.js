@@ -1,16 +1,24 @@
 const mongoose = require('mongoose');
-//Define a schema
 const Schema = mongoose.Schema;
 const MovieSchema = new Schema({
- name: {
+  movieName: {
   type: String,
   trim: true,  
   required: true,
  },
- released_on: {
+  releaseDate: {
   type: Date,
   trim: true,
   required: true
- }
+ },
+ tickets:{
+  type: Number,
+  required: true, 
+  min : 1
+},
+moviePrice:{
+  type: Number,
+  required: true
+}
 });
 module.exports = mongoose.model('Movie', MovieSchema)
